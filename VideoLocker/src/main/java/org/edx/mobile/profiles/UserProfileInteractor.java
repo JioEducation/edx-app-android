@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import org.edx.mobile.event.AccountUpdatedEvent;
+import org.edx.mobile.event.ProfilePhotoFetchedEvent;
 import org.edx.mobile.event.ProfilePhotoUpdatedEvent;
 import org.edx.mobile.logger.Logger;
 import org.edx.mobile.model.api.ProfileModel;
@@ -43,7 +44,7 @@ public class UserProfileInteractor {
     @NonNull
     private final Logger logger = new Logger(getClass().getName());
 
-    public UserProfileInteractor(@NonNull final String username, @NonNull final UserAPI userAPI, @NonNull EventBus eventBus, @NonNull UserPrefs userPrefs) {
+    public UserProfileInteractor(@NonNull final String username, @NonNull final UserAPI userAPI, @NonNull EventBus eventBus, @NonNull final UserPrefs userPrefs) {
         this.username = username;
         this.eventBus = eventBus;
 
@@ -61,6 +62,10 @@ public class UserProfileInteractor {
             @Override
             public void onData(@NonNull Account data) {
                 handleNewAccount(data);
+                // Only send the event when we are viewing the logged-in user's profile
+                if (viewingOwnProfile) {
+                    EventBus.getDefault().post(new ProfilePhotoFetchedEvent(data.getProfileImage()));
+                }
             }
 
             @Override

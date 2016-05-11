@@ -31,6 +31,7 @@ import org.edx.mobile.R;
 import org.edx.mobile.base.BaseFragment;
 import org.edx.mobile.base.BaseFragmentActivity;
 import org.edx.mobile.core.IEdxEnvironment;
+import org.edx.mobile.event.ProfilePhotoFetchedEvent;
 import org.edx.mobile.event.ProfilePhotoUpdatedEvent;
 import org.edx.mobile.logger.Logger;
 import org.edx.mobile.model.api.ProfileModel;
@@ -95,9 +96,9 @@ public class NavigationFragment extends BaseFragment {
             getAccountTask = new GetAccountTask(getActivity(), profile.username) {
                 @Override
                 protected void onSuccess(@NonNull Account account) throws Exception {
-                    NavigationFragment.this.profileImage = account.getProfileImage();
+                    profileImage = account.getProfileImage();
                     if (null != imageView) {
-                        loadProfileImage(account.getProfileImage(), imageView);
+                        EventBus.getDefault().post(new ProfilePhotoFetchedEvent(profileImage));
                     }
                 }
             };
@@ -359,6 +360,13 @@ public class NavigationFragment extends BaseFragment {
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
                         .into(imageView);
             }
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public void onEventMainThread(@NonNull ProfilePhotoFetchedEvent event) {
+        if (imageView != null) {
+            loadProfileImage(event.getProfileImage(), imageView);
         }
     }
 
