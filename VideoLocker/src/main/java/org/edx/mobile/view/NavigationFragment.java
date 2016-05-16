@@ -31,7 +31,7 @@ import org.edx.mobile.R;
 import org.edx.mobile.base.BaseFragment;
 import org.edx.mobile.base.BaseFragmentActivity;
 import org.edx.mobile.core.IEdxEnvironment;
-import org.edx.mobile.event.ProfilePhotoFetchedEvent;
+import org.edx.mobile.event.AccountDataLoadedEvent;
 import org.edx.mobile.event.ProfilePhotoUpdatedEvent;
 import org.edx.mobile.logger.Logger;
 import org.edx.mobile.model.api.ProfileModel;
@@ -97,9 +97,7 @@ public class NavigationFragment extends BaseFragment {
                 @Override
                 protected void onSuccess(@NonNull Account account) throws Exception {
                     profileImage = account.getProfileImage();
-                    if (null != imageView) {
-                        EventBus.getDefault().post(new ProfilePhotoFetchedEvent(profileImage));
-                    }
+                    // Image loading logic can be found in onEventMainThread(AccountDataLoadedEvent)
                 }
             };
             getAccountTask.setTaskProcessCallback(null); // Disable global loading indicator
@@ -364,9 +362,12 @@ public class NavigationFragment extends BaseFragment {
     }
 
     @SuppressWarnings("unused")
-    public void onEventMainThread(@NonNull ProfilePhotoFetchedEvent event) {
+    public void onEventMainThread(@NonNull AccountDataLoadedEvent event) {
         if (imageView != null) {
-            loadProfileImage(event.getProfileImage(), imageView);
+            final Account account = event.getAccount();
+            if (account.getUsername().equalsIgnoreCase(profile.username)) {
+                loadProfileImage(account.getProfileImage(), imageView);
+            }
         }
     }
 

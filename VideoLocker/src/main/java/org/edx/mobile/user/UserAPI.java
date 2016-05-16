@@ -8,7 +8,7 @@ import android.webkit.MimeTypeMap;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import org.edx.mobile.event.AccountUpdatedEvent;
+import org.edx.mobile.event.AccountDataLoadedEvent;
 import org.edx.mobile.event.ProfilePhotoUpdatedEvent;
 import org.edx.mobile.http.ApiConstants;
 import org.edx.mobile.http.RetroHttpException;
@@ -40,12 +40,14 @@ public class UserAPI {
     }
 
     public Account getAccount(@NonNull String username) throws RetroHttpException {
-        return userService.getAccount(username);
+        final Account account = userService.getAccount(username);
+        EventBus.getDefault().post(new AccountDataLoadedEvent(account));
+        return account;
     }
 
     public Account updateAccount(@NonNull String username, @NonNull String field, @Nullable Object value) throws RetroHttpException {
         final Account updatedAccount = userService.updateAccount(username, Collections.singletonMap(field, value));
-        EventBus.getDefault().post(new AccountUpdatedEvent(updatedAccount));
+        EventBus.getDefault().post(new AccountDataLoadedEvent(updatedAccount));
         return updatedAccount;
     }
 
