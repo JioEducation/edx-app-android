@@ -19,14 +19,14 @@ public class LaunchPresenterTest extends PresenterTest<LaunchPresenter, LaunchPr
     Config config;
 
     @Test
-    public void testSetCourseDiscoveryButton_withCourseDiscoverOnLaunchEnabled_courseDiscoverButtonIsVisible() {
+    public void testSetCourseDiscoveryButton_withCourseDiscoverOnLaunchEnabled_courseDiscoverButtonIsSet() {
         when(config.isCourseDiscoveryOnLaunchEnabled()).thenReturn(false);
         startPresenter(new LaunchPresenter(config));
         verify(view).setCourseDiscoveryButton(false);
     }
 
     @Test
-    public void testSetCourseDiscoveryButton_withCourseDiscoverOnLaunchDisabled_courseDiscoverButtonIsNotVisible() {
+    public void testSetCourseDiscoveryButton_withCourseDiscoverOnLaunchDisabled_courseDiscoverButtonIsSet() {
         when(config.isCourseDiscoveryOnLaunchEnabled()).thenReturn(true);
         startPresenter(new LaunchPresenter(config));
         verify(view).setCourseDiscoveryButton(true);
