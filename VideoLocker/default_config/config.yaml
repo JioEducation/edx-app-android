@@ -6,3 +6,6 @@ FEEDBACK_EMAIL_ADDRESS: 'support@example.com'
 COURSE_ENROLLMENT:
     ENABLED: false
     EXTERNAL_COURSE_SEARCH_URL: 'http://10.0.2.2:8000/courses'
+TEST_ACCOUNT:
+    NAME: 'user@example.com'
+    PASSWORD: 'pass'

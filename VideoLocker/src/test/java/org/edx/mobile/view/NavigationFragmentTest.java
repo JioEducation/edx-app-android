@@ -15,6 +15,7 @@ import org.robolectric.shadows.support.v4.SupportFragmentTestUtil;
 import de.greenrobot.event.EventBus;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.fail;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
@@ -38,6 +39,20 @@ public class NavigationFragmentTest extends UiTest {
         assertEquals(previousDrawable, profileImage.getDrawable());
 
         // Assert: Profile pic is updated when a logged in user's account object is broadcasted
+        if (config == null)
+            fail("KHALID: Config NOT FOUND");
+        System.out.println("KHALID: " + config);
+
+        if (config.getTestAccountConfig() == null)
+            fail("KHALID: Test account config NOT FOUND");
+        System.out.println("KHALID: " + config.getTestAccountConfig());
+
+        if (config.getTestAccountConfig().getName() == null) {
+            fail("KHALID: Config no name NOT FOUND");
+        }
+
+        System.out.println(config.getTestAccountConfig().getName());
+
         final String loggedInUser = config.getTestAccountConfig().getName().split("@")[0];
         account = configureMockAccount(loggedInUser);
         EventBus.getDefault().post(new AccountDataLoadedEvent(account));
