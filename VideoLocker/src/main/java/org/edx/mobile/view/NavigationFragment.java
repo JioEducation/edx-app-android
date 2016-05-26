@@ -93,13 +93,7 @@ public class NavigationFragment extends BaseFragment {
         pref = new PrefManager(context, PrefManager.Pref.LOGIN);
         profile = pref.getCurrentUserProfile();
         if (config.isUserProfilesEnabled() && profile != null && profile.username != null) {
-            getAccountTask = new GetAccountTask(getActivity(), profile.username) {
-                @Override
-                protected void onSuccess(@NonNull Account account) throws Exception {
-                    profileImage = account.getProfileImage();
-                    // Image loading logic can be found in onEventMainThread(AccountDataLoadedEvent)
-                }
-            };
+            getAccountTask = new GetAccountTask(getActivity(), profile.username);
             getAccountTask.setTaskProcessCallback(null); // Disable global loading indicator
             getAccountTask.execute();
         }
@@ -366,6 +360,7 @@ public class NavigationFragment extends BaseFragment {
         if (imageView != null) {
             final Account account = event.getAccount();
             if (account.getUsername().equalsIgnoreCase(profile.username)) {
+                profileImage = account.getProfileImage();
                 loadProfileImage(account.getProfileImage(), imageView);
             }
         }
